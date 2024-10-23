@@ -1,0 +1,9 @@
+build/
+cmake_install.cmake
+CMakeFiles/
+CMakeCache.txt
+CPackConfig.cmake
+CPackSourceConfig.cmake
+Makefile
+.cache/
+

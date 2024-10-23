@@ -1,3 +1,9 @@
 #pragma once
+#include<iostream>
 
-class Dijkstra {};
+class Dijkstra {
+    private:
+    public:
+        Dijkstra();
+        void say_hi();
+};
