@@ -6,5 +6,6 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 Makefile
 .cache/
-
+*.a
 compile_commands.json
+IA

@@ -3,10 +3,13 @@
 
 int main ()
 {
-    GUI gui(500, 500);
-    Graph graph;
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+
+    MainWindow window(600, 800,
+                      "Dijkstra's algorithm", settings);
     
-    int result = gui.run();
+    int result = window.run();
 
     return result;
 }
