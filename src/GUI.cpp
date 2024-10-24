@@ -1,5 +1,4 @@
 #include <GUI.hpp>
-#include <iostream>
 //Constant definitions
 
 //Method definitions for GUI class
@@ -18,10 +17,6 @@ int MainWindow::run() {
 int MainWindow::eventLoop() 
 {
     int result = 0;
-    Node node("A");
-    Node node2("B");
-    NodeShape node_sh(sf::Vector2f(250, 250), node);
-    NodeShape node_sh2(sf::Vector2f(150, 250), node2);
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event))
@@ -31,10 +26,6 @@ int MainWindow::eventLoop()
         }
         window.clear(sf::Color::White);
         
-        window.draw(node_sh.getShape());
-        window.draw(node_sh2.getShape());
-        window.draw(node_sh2.getLabel());
-        window.draw(node_sh.getLabel());
         window.display();
     }
 

@@ -28,6 +28,13 @@ class Connection {
 class Graph {
     public:
         Graph();
+        Node& getByName(const std::string&);
+
+        std::vector<Node&> getConnectedNodes(const Node&) const;
+        std::vector<Node&> dijkstra(const Node&) const;
+        std::vector<Node&> getNodes() const;
+
+        int loadFromFile (const std::string&);
     private:
         std::vector<Node> nodes;
         std::vector<Connection> connections;
