@@ -7,3 +7,4 @@ CPackSourceConfig.cmake
 Makefile
 .cache/
 
+compile_commands.json
