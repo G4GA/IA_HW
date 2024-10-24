@@ -74,6 +74,8 @@ void NodeShape::buildShape()
 
 void NodeShape::buildLabel()
 {
+    //A lot of magic numbers... It is what it is tho
+    //TODO: Define constants for the magic numbers
     sf::Vector2f offset_position(16.5f, 9.5f);
     font.loadFromFile(FONT_FP);
 
