@@ -1,5 +1,7 @@
 #pragma once
 
+#include<iostream>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
@@ -12,6 +14,8 @@ class NodeShape {
     //Getters and setter
         const sf::CircleShape& getShape() const;
         const sf::Text& getLabel() const;
+    //Public const expressions
+        static constexpr float SIZE = 24.f;
     private:
         //Attributes
         sf::CircleShape shape;
@@ -23,7 +27,6 @@ class NodeShape {
         static constexpr sf::Uint32 LIGHT_BLUE = 0xC4E1F6;
         static constexpr sf::Uint32 BLUE = 0x0D92F4;
         static constexpr float DEF_THICKNESS = 2.f;
-        static constexpr float SIZE = 24.f;
         const std::string FONT_FP = "./static/JetBrainsMono-Regular.ttf";
         //Methods
         void buildShape();
@@ -32,20 +35,31 @@ class NodeShape {
 
 class GraphUI {
     public:
-        GraphUI(Graph&);
+        GraphUI(Graph&, const size_t&, const sf::Vector2f&);
+        //getters
+        sf::Vector2f getCellSize() const;
+        float getCellXSize() const;
+        float getCellYSize() const;
+        size_t getGridScale() const;
     private:
-        Graph& graph;
+        sf::Vector2f cellSize;
+        size_t gridScale;
+        Graph *graph;
+        std::vector<NodeShape> nodeShapes;
+
 };
 class MainWindow {
     public:
         MainWindow(const size_t&, const size_t&,
-                   const std::string&, const sf::ContextSettings&);
+                   const std::string&, const sf::ContextSettings&,
+                   const Graph&);
         int run();
     private:
         //Private attributtes
         sf::RenderWindow window;
-        size_t height;
-        size_t width;
+        const Graph *graph;
+        float height;
+        float width;
         //Private methods
         int eventLoop();
 };

@@ -3,12 +3,16 @@
 
 //Method definitions for GUI class
 MainWindow::MainWindow(const size_t& width, const size_t& height,
-                       const std::string& title, const sf::ContextSettings& settings) : 
-    window(sf::VideoMode(height, width), 
+                       const std::string& title, const sf::ContextSettings& settings,
+                       const Graph& graph) : 
+
+    window(sf::VideoMode(width, height), 
            title, sf::Style::Titlebar | sf::Style::Close, settings),
-    height(),
-    width()
-{}
+
+    height(height), width(width)
+{
+    this -> graph = &graph;
+}
 
 int MainWindow::run() {
     return this -> eventLoop();
@@ -17,6 +21,13 @@ int MainWindow::run() {
 int MainWindow::eventLoop() 
 {
     int result = 0;
+    Node myNode = Node("A");
+    float centerAX = (((this -> width)/2.f) - NodeShape::SIZE);
+    float centerAY = (((this -> height)/2.f) - NodeShape::SIZE);
+    sf::Vector2f centerA(centerAX, centerAY);
+    
+    NodeShape test = NodeShape(centerA,
+                                   myNode);
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event))
@@ -25,6 +36,8 @@ int MainWindow::eventLoop()
                 window.close();
         }
         window.clear(sf::Color::White);
+        window.draw(test.getShape());
+        window.draw(test.getLabel());
         
         window.display();
     }
