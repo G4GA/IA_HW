@@ -8,7 +8,6 @@ MainWindow::MainWindow(const size_t& width, const size_t& height,
 
     window(sf::VideoMode(width, height), 
            title, sf::Style::Titlebar | sf::Style::Close, settings),
-
     height(height), width(width)
 {
     this -> graph = &graph;

@@ -23,46 +23,49 @@ int Graph::loadFromFile(const std::string& filepath)
     return rc;
 }
 
-Node   Graph::getByName
+const Node* Graph::getByName
 (const std::string&)
 {}
 
-size_t Graph::getConnectionWeight()
-{}
+size_t Graph::getConnectionWeight(const Connection* conn)
+{
+
+}
 
 void Graph::createNode
 (const Node& node)
 {
-    this -> nodes.push_back(Node(node));
+    const Node *newNode = new Node(node);
+    this -> nodes.push_back(newNode);
 }
 
 void Graph::createNode
 (const std::string& name)
 {
-    this -> nodes.push_back(Node(name));
+    const Node *newNode = new Node(name); 
+    this -> nodes.push_back(newNode);
 }
 
 void Graph::createConnection
-(const Node& first, const Node& second, size_t weight)
+(const Node* first, const Node* second, size_t weight)
 {
     //Of course this is missing a least a few validations
     //sadly, there is no time for that now so
     //TODO: Somewhere in the future, add them validations
-    this -> connections.push_back(Connection(first, second, weight));
+    const Connection *newConnection = new Connection(first, second, weight);
+    this -> connections.push_back(newConnection);
 }
 
 std::vector<const Node*> Graph::getConnectedNodes
-(const Node& node) const
+(const Node* node) const
 {
     std::vector<const Node*> connectedNodes;
     for
-    (auto conIt = connections.begin(); conIt != connections.end(); conIt ++) {
+    (const Connection *conIt = *connections.begin(); conIt != *connections.end(); conIt ++) {
         const Node *first = conIt -> getFirst();
         const Node *second = conIt -> getSecond();
         if 
-        (node.getName() == first -> getName()) {
-            const Node *myNode 
-            connectedNodes.push_back(const Node(second));
+        (node -> getName() == first -> getName()) {
         }
 
     }
@@ -71,7 +74,7 @@ std::vector<const Node*> Graph::getConnectedNodes
 }
 
 std::vector<const Node*> Graph::dijkstra
-(const Node&) const
+(const Node*) const
 {}
 
 std::vector<const Node*> Graph::getNodes() const
@@ -100,12 +103,11 @@ std::string Node::getName() const
 
 //Connection method definitions
 Connection::Connection
-(const Node& first, const Node& second, size_t weight) :
-    weight(weight)
-{
-    this -> first = &first;
-    this -> second = &second;
-}
+(const Node* first, const Node* second, size_t weight) :
+    weight(weight),
+    first(first),
+    second(second)
+{}
 
 const Node *Connection::getFirst() const
 {

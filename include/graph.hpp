@@ -2,11 +2,12 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 
 class Node {
     public:
         Node(const std::string&); //Done
-        Node(const Node*); //Done
+        Node(const Node&); //Done
         //Getters
         std::string getName() const; //Done
     private:
@@ -15,9 +16,9 @@ class Node {
 
 class Connection {
     public:
-        Connection(const Node&, const Node&, size_t); //Done
+        Connection(const Node*, const Node*, size_t); //Done
         //Getters
-       const Node *getFirst() const; //Done
+        const Node *getFirst() const; //Done
         const Node *getSecond() const; //Done
         size_t getWeight() const; //Done
     private:
@@ -29,21 +30,23 @@ class Connection {
 class Graph {
     public:
         Graph();
-        Node getByName(const std::string&);
-        size_t getConnectionWeight();
-        bool areConnected(const Node&, const Node&);
+        const Node* getByName(const std::string&);
+        size_t getConnectionWeight(const Connection*);
+        bool areConnected(const Node*, const Node*);
+        const Connection* getConnection(const Node*, const Node*);
+
         void createNode(const Node&);
         void createNode(const std::string&);
-        void createConnection(const Node&, const Node&, size_t);
+        void createConnection(const Node*, const Node*, size_t);
 
-        std::vector<const Node*> getConnectedNodes(const Node&) const;
-        std::vector<const Node*> dijkstra(const Node&) const;
+        std::vector<const Node*> getConnectedNodes(const Node*) const;
+        std::vector<const Node*> dijkstra(const Node*) const;
         std::vector<const Node*> getNodes() const;
 
         int loadFromFile (const std::string&);
     private:
-        std::vector<Node> nodes;
-        std::vector<Connection> connections;
+        std::vector<const Node*> nodes;
+        std::vector<const Connection*> connections;
 
 };
 
