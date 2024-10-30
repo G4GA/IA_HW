@@ -1,0 +1,12 @@
+#Nodes
+A,B,C,D,F,E,G,H,I,J
+#Connections
+A:3,B;8,C;5,D
+B:5,C;7,F
+C:2,D;8,E;5,F
+D:4,G
+F:5,E;6,H
+E:6,G;3,I;1,H
+G:4,I
+H:2,J
+I:6,J

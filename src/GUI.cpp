@@ -3,17 +3,18 @@
 
 //Method definitions for GUI class
 MainWindow::MainWindow(const size_t& width, const size_t& height,
-                       const std::string& title, const sf::ContextSettings& settings,
-                       const Graph& graph) : 
-
-    window(sf::VideoMode(width, height), 
-           title, sf::Style::Titlebar | sf::Style::Close, settings),
+                       const std::string& title, const Graph& graph) :
     height(height), width(width)
 {
+    settings.antialiasingLevel = 16;
+    this -> window.create(sf::VideoMode(width, height), 
+           title, sf::Style::Titlebar | sf::Style::Close, settings); 
+
     this -> graph = &graph;
 }
 
-int MainWindow::run() {
+int MainWindow::run() 
+{
     return this -> eventLoop();
 }
 

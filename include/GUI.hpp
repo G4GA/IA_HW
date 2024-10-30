@@ -51,12 +51,12 @@ class GraphUI {
 class MainWindow {
     public:
         MainWindow(const size_t&, const size_t&,
-                   const std::string&, const sf::ContextSettings&,
-                   const Graph&);
+                   const std::string&, const Graph&);
         int run();
     private:
         //Private attributtes
         sf::RenderWindow window;
+        sf::ContextSettings settings;
         const Graph *graph;
         float height;
         float width;
