@@ -10,10 +10,14 @@
 
 class NodeShape {
     public:
-        NodeShape(const sf::Vector2f&, const Node&);
+        NodeShape(const sf::Vector2i&, const sf::Vector2f&, const Node*);
     //Getters and setter
-        const sf::CircleShape& getShape() const;
-        const sf::Text& getLabel() const;
+        const sf::CircleShape& getShape() const; //Done
+        const sf::Text& getLabel() const;//Done
+        const sf::Vector2i getPos() const;
+        const sf::Vector2f getRealPos() const;
+        const std::string getNodeName() const;
+        void setRealPos(sf::Vector2f);
     //Public const expressions
         static constexpr float SIZE = 24.f;
     private:
@@ -21,16 +25,19 @@ class NodeShape {
         sf::CircleShape shape;
         sf::Font font;
         sf::Text shapeLabel;
-        sf::Vector2f position;
-        const Node& node;
+        static const sf::Vector2f offsetPos;
+
+        sf::Vector2i position;
+        sf::Vector2i realPos;
+        const Node* node;
         //Constants
         static constexpr sf::Uint32 LIGHT_BLUE = 0xC4E1F6;
         static constexpr sf::Uint32 BLUE = 0x0D92F4;
         static constexpr float DEF_THICKNESS = 2.f;
         const std::string FONT_FP = "./static/JetBrainsMono-Regular.ttf";
         //Methods
-        void buildShape();
-        void buildLabel();
+        void buildShape();//Done
+        void buildLabel();//Done
 };
 
 class GraphUI {
@@ -40,10 +47,10 @@ class GraphUI {
         sf::Vector2f getCellSize() const;
         float getCellXSize() const;
         float getCellYSize() const;
-        size_t getGridScale() const;
+        sf::Vector2f getGridScale() const;
     private:
         sf::Vector2f cellSize;
-        size_t gridScale;
+        sf::Vector2f gridScale;
         Graph *graph;
         std::vector<NodeShape> nodeShapes;
 
@@ -51,15 +58,16 @@ class GraphUI {
 class MainWindow {
     public:
         MainWindow(const size_t&, const size_t&,
-                   const std::string&, const Graph&);
+                   const std::string&,Graph&);
         int run();
     private:
         //Private attributtes
         sf::RenderWindow window;
         sf::ContextSettings settings;
-        const Graph *graph;
+        Graph *graph;
         float height;
         float width;
+        //Constants
         //Private methods
         int eventLoop();
 };

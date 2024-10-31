@@ -1,6 +1,8 @@
 #include <graph.hpp>
 #include <iostream>
+#include <string>
 #include <fstream>
+#include <sstream>
 
 
 //Graph method definitions
@@ -14,18 +16,78 @@ int Graph::loadFromFile(const std::string& filepath)
     std::string line;
     char *c;
     std::ifstream fd(filepath);
+
     if (fd.is_open()) {
-        getline(fd, line, '#');
-        std::stoi(line, &bSize);
+
+        while(getline(fd, line)) {
+            std::string nodeKey = "#Nodes"; 
+            std::string connectionKey = "#Connections";
+
+            if (line.compare(0, nodeKey.size(), nodeKey) == 0) {
+                getline(fd, line);
+                std::stringstream ss(line);
+                std::string nodeName;
+                while (std::getline(ss, nodeName, ',')) {
+                    createNode(nodeName);
+                }
+
+            } else if (line.compare(0, connectionKey.size(), connectionKey) == 0) {
+                while(getline(fd, line)) {
+                    std::stringstream ss(line);
+                    const Node *firstNode;
+                    std::string nodeName;
+
+                    getline(ss, nodeName, ':');
+                    firstNode = getByName(nodeName);
+
+                    if (firstNode) {
+                        while(getline(ss, line, ';')) {
+                            size_t weight;
+                            std::string secNodename;
+                            const Node *secondNode;
+                            getSecondNode(line, secNodename, weight);
+                            secondNode = getByName(secNodename);
+                            if (!secondNode) {
+                                createNode(secNodename);
+                            }
+                            createConnection(firstNode, secondNode, weight);
+                        }
+                    }
+                }
+            } else {
+                rc = 2;
+            }
+        }
     } else {
         rc = 1;
     }
     return rc;
 }
 
+void Graph::getSecondNode
+(std::string& line, std::string& nodeName, size_t& weight)
+{
+    std::stringstream ss(line);
+    std::string weightStr;
+    getline(ss, weightStr, ',');
+    getline(ss, nodeName);
+
+    weight = std::stol(weightStr);
+}
+
 const Node* Graph::getByName
-(const std::string&)
-{}
+(const std::string& name)
+{
+    const Node *match = nullptr;
+
+    for (const Node *curNode: nodes) {
+        if (curNode -> getName() == name) {
+            match = curNode;
+        }
+    }
+
+    return match;
+}
 
 size_t Graph::getConnectionWeight(const Connection* conn)
 {
@@ -80,9 +142,14 @@ std::vector<const Node*> Graph::dijkstra
 std::vector<const Node*> Graph::getNodes() const
 {}
 
-int loadFromFile
-(const std::string&)
-{}
+std::vector<const Node*> Graph::getAllNodes () const
+{
+    return nodes;
+}
+std::vector<const Connection*> Graph::getAllConnections () const 
+{
+    return connections;
+}
 
 //Node method definitions
 Node::Node

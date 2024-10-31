@@ -1,14 +1,16 @@
 #include <GUI.hpp>
 //Constant definitions
 
+static const sf::Vector2f offsetPos(16.5f, 9.5f);
+
 //Method definitions for GUI class
 MainWindow::MainWindow(const size_t& width, const size_t& height,
-                       const std::string& title, const Graph& graph) :
+                       const std::string& title, Graph& graph) :
     height(height), width(width)
 {
     settings.antialiasingLevel = 16;
-    this -> window.create(sf::VideoMode(width, height), 
-           title, sf::Style::Titlebar | sf::Style::Close, settings); 
+    window.create(sf::VideoMode(width, height), 
+                  title, sf::Style::Titlebar | sf::Style::Close, settings); 
 
     this -> graph = &graph;
 }
@@ -21,13 +23,7 @@ int MainWindow::run()
 int MainWindow::eventLoop() 
 {
     int result = 0;
-    Node myNode = Node("A");
-    float centerAX = (((this -> width)/2.f) - NodeShape::SIZE);
-    float centerAY = (((this -> height)/2.f) - NodeShape::SIZE);
-    sf::Vector2f centerA(centerAX, centerAY);
     
-    NodeShape test = NodeShape(centerA,
-                                   myNode);
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event))
@@ -36,8 +32,6 @@ int MainWindow::eventLoop()
                 window.close();
         }
         window.clear(sf::Color::White);
-        window.draw(test.getShape());
-        window.draw(test.getLabel());
         
         window.display();
     }
@@ -47,11 +41,11 @@ int MainWindow::eventLoop()
 
 //Method definitions for Node class
 //Constructors
-NodeShape::NodeShape(const sf::Vector2f& position, const Node& node) :
-    node(node),
-    shape(SIZE),
-    position(position)
+NodeShape::NodeShape
+(const sf::Vector2i& gridPosition, const sf::Vector2f& cellSize, const Node* node) :
+    position(gridPosition)
 {
+    this -> node = node;
     buildShape();
     buildLabel();
 }
@@ -70,7 +64,6 @@ const sf::Text& NodeShape::getLabel() const
 //Private methods
 void NodeShape::buildShape()
 {
-    shape.setPosition(position);
     shape.setFillColor(sf::Color(LIGHT_BLUE));
     shape.setOutlineColor(sf::Color(BLUE));
     shape.setOutlineThickness(DEF_THICKNESS);
@@ -87,5 +80,4 @@ void NodeShape::buildLabel()
     shapeLabel.setString(node.getName());
     shapeLabel.setCharacterSize(24);
     shapeLabel.setFillColor(sf::Color::Black);
-    shapeLabel.setPosition(position + offset_position);
 }

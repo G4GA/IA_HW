@@ -44,9 +44,13 @@ class Graph {
         std::vector<const Node*> getNodes() const;
 
         int loadFromFile (const std::string&);
+
+        std::vector<const Node*> getAllNodes() const;
+        std::vector<const Connection*> getAllConnections() const;
     private:
         std::vector<const Node*> nodes;
         std::vector<const Connection*> connections;
+        void getSecondNode(std::string&, std::string&, size_t&);
 
 };
 
