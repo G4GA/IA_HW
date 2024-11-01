@@ -1,4 +1,7 @@
 #include <GUI.hpp>
+#include <fstream>
+#include <sstream>
+#include <string>
 //Constant definitions
 
 static const sf::Vector2f offsetPos(16.5f, 9.5f);
@@ -13,6 +16,7 @@ MainWindow::MainWindow(const size_t& width, const size_t& height,
                   title, sf::Style::Titlebar | sf::Style::Close, settings); 
 
     this -> graph = &graph;
+    g_ui.loadMap(graphPath);
 }
 
 int MainWindow::run() 
@@ -102,7 +106,7 @@ sf::Vector2f GraphUI::getCellSize () const
     return cellSize;
 }
 
-sf::Vector2f GraphUI::getGridScale () const
+sf::Vector2i GraphUI::getGridScale () const
 {
     return gridScale;
 }
@@ -129,3 +133,48 @@ const NodeShape &GraphUI::getNodeShape
     }
     return *rNode;
 }
+
+void GraphUI::loadMap
+(const std::string& filePath)
+{
+    std::ifstream fd(filePath);
+    std::string line;
+
+    if (fd.is_open()) {
+        std::cout << "GraphUI::LoadMap\n";
+        while (getline(fd, line, '=')) {
+            if (line.compare(0, line.size(), "gridScale") == 0) {
+                getline(fd, line);
+                readVector(line, gridScale);
+            } else {
+                graph -> getByName(line);
+                if (graph) {
+                    getline(fd, line);
+
+                }
+            }
+        }
+    }
+
+}
+
+void GraphUI::setCellSize() {
+
+}
+
+
+void GraphUI::readVector
+(std::string& line, sf::Vector2i& curVector)
+{
+    std::stringstream ss(line);
+    std::string buffer;
+    int vArray[2];
+
+    for (int i = 0; getline(ss, buffer, ','); i++) {
+        vArray[i] = std::stoi(buffer);
+    }
+    curVector.x = vArray[0]; 
+    curVector.y = vArray[1]; 
+    
+}
+

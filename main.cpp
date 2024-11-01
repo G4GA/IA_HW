@@ -10,7 +10,7 @@ int main (int argc, char *argv [])
     const std::string GRAPH_PATH = "./static/graph.txt";
 
     myGraph.loadFromFile(GRAPH_PATH);
-
+/*
     for (const Connection* conn: myGraph.getAllConnections()) {
         std::cout << conn -> getFirst() -> getName() << std::endl
                   << conn -> getSecond() -> getName() << std::endl
@@ -21,7 +21,7 @@ int main (int argc, char *argv [])
 
     for (const Node* nod: myGraph.getAllNodes()) {
         std::cout << nod -> getName() << std::endl;
-    }
+    }*/
 
     MainWindow window(WIDTH, HEIGHT,
                       "Dijkstra's algorithm", myGraph);

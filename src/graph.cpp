@@ -126,8 +126,8 @@ std::vector<const Node*> Graph::getConnectedNodes
     (const Connection *conIt = *connections.begin(); conIt != *connections.end(); conIt ++) {
         const Node *first = conIt -> getFirst();
         const Node *second = conIt -> getSecond();
-        if 
-        (node -> getName() == first -> getName()) {
+
+        if (node -> getName() == first -> getName()) {
         }
 
     }

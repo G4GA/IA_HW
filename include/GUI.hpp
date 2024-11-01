@@ -48,17 +48,23 @@ class GraphUI {
         sf::Vector2f getCellSize() const; //Done
         float getCellXSize() const; //Done
         float getCellYSize() const; //Done
-        sf::Vector2f getGridScale() const; //Done
+        sf::Vector2i getGridScale() const; //Done
 
         const NodeShape &getNodeShape(size_t) const;
         //Methods
         void loadMap(const std::string&);
     private:
+        //attributes
         sf::Vector2f cellSize;
-        sf::Vector2f gridScale;
-        Graph *graph;
+        sf::Vector2i gridScale;
+        Graph        *graph;
+
         std::vector<NodeShape> nodeShapes;
-        sf::VertexArray connnectionLines;
+        sf::VertexArray        connnectionLines;
+        //Methods
+        void readVector(std::string&, sf::Vector2i&);
+        void addNodeShape(const Node&);
+        void setCellSize(); 
 };
 
 class MainWindow {
@@ -77,5 +83,7 @@ class MainWindow {
         //Constants
         //Private methods
         int eventLoop();
+        //Constant attributes
+        const std::string graphPath = "./static/placement.txt";
 };
 
