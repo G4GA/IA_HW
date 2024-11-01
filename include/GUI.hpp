@@ -42,19 +42,25 @@ class NodeShape {
 
 class GraphUI {
     public:
-        GraphUI(Graph&, const size_t&, const sf::Vector2f&);
+        GraphUI(Graph&, const sf::Vector2f&);
+        GraphUI(Graph&);
         //getters
-        sf::Vector2f getCellSize() const;
-        float getCellXSize() const;
-        float getCellYSize() const;
-        sf::Vector2f getGridScale() const;
+        sf::Vector2f getCellSize() const; //Done
+        float getCellXSize() const; //Done
+        float getCellYSize() const; //Done
+        sf::Vector2f getGridScale() const; //Done
+
+        const NodeShape &getNodeShape(size_t) const;
+        //Methods
+        void loadMap(const std::string&);
     private:
         sf::Vector2f cellSize;
         sf::Vector2f gridScale;
         Graph *graph;
         std::vector<NodeShape> nodeShapes;
-
+        sf::VertexArray connnectionLines;
 };
+
 class MainWindow {
     public:
         MainWindow(const size_t&, const size_t&,
@@ -65,6 +71,7 @@ class MainWindow {
         sf::RenderWindow window;
         sf::ContextSettings settings;
         Graph *graph;
+        GraphUI g_ui;
         float height;
         float width;
         //Constants

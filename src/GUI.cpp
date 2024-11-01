@@ -6,7 +6,7 @@ static const sf::Vector2f offsetPos(16.5f, 9.5f);
 //Method definitions for GUI class
 MainWindow::MainWindow(const size_t& width, const size_t& height,
                        const std::string& title, Graph& graph) :
-    height(height), width(width)
+    height(height), width(width), g_ui(graph)
 {
     settings.antialiasingLevel = 16;
     window.create(sf::VideoMode(width, height), 
@@ -77,7 +77,55 @@ void NodeShape::buildLabel()
     font.loadFromFile(FONT_FP);
 
     shapeLabel.setFont(font);
-    shapeLabel.setString(node.getName());
+    shapeLabel.setString(node -> getName());
     shapeLabel.setCharacterSize(24);
     shapeLabel.setFillColor(sf::Color::Black);
+}
+
+//GraphUI Method
+
+GraphUI::GraphUI
+(Graph &graph, const sf::Vector2f& gridScale) :
+    gridScale(gridScale) 
+{
+    this -> graph = &graph;
+}
+
+GraphUI::GraphUI
+(Graph& graph)
+{
+    this -> graph = &graph;
+}
+
+sf::Vector2f GraphUI::getCellSize () const
+{
+    return cellSize;
+}
+
+sf::Vector2f GraphUI::getGridScale () const
+{
+    return gridScale;
+}
+
+float GraphUI::getCellXSize () const
+{
+    return cellSize.x;
+}
+
+float GraphUI::getCellYSize () const
+{
+    return cellSize.y;
+}
+
+const NodeShape &GraphUI::getNodeShape
+(size_t index) const
+{
+    size_t counter = 0;
+    const NodeShape *rNode;
+    for (std::vector<NodeShape>::const_iterator it = nodeShapes.begin(); it != nodeShapes.end(); it++) {
+        if (counter == index) {
+            rNode = &*it;
+        } 
+    }
+    return *rNode;
 }
