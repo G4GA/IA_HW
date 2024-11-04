@@ -169,12 +169,12 @@ void GraphUI::readVector
     std::stringstream ss(line);
     std::string buffer;
     int vArray[2];
+    std::cout << line << "\n";
 
     for (int i = 0; getline(ss, buffer, ','); i++) {
         vArray[i] = std::stoi(buffer);
     }
     curVector.x = vArray[0]; 
     curVector.y = vArray[1]; 
-    
 }
 

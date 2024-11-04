@@ -1,20 +1,30 @@
 #!/bin/bash
 #Hey I am coding, while listening to sabrina carpenter
 
-echo "Script for setting up the project pseudo env"
-sleep 1
-echo "Running cmake..."
-cmake -B build -S .
-sleep 1
-if ! test -f "./compile_commands.json";
+echo "Set up script and build/run commands"
+
+command=$1
+
+echo $command
+if [ -n $command ];
 then
-    echo "Creating json file for nvim lsp"
-    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+    if [ $command = "build" ];
+    then
+        make -C build -j$(nproc)
+    fi
+    if [ $command = "run" ];
+    then
+        build/IA
+    fi
+else
+    sleep 1
+    echo "Running cmake..."
+    cmake -B build -S .
+    sleep 1
+    if ! test -f "./compile_commands.json";
+    then
+        echo "Creating json file for nvim lsp"
+        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+    fi
 fi
-#Creating aliases for compilation 
-sleep 1
-buildp="make -C /build -j$(nproc)"
-echo $buildp
-run=/build/IA
-echo $run
 
