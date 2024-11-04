@@ -1,5 +1,20 @@
 #!/bin/bash
+#Hey I am coding, while listening to sabrina carpenter
 
+echo "Script for setting up the project pseudo env"
+sleep 1
+echo "Running cmake..."
 cmake -B build -S .
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+sleep 1
+if ! test -f "./compile_commands.json";
+then
+    echo "Creating json file for nvim lsp"
+    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+fi
+#Creating aliases for compilation 
+sleep 1
+buildp="make -C /build -j$(nproc)"
+echo $buildp
+run=/build/IA
+echo $run
 
