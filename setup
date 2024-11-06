@@ -1,22 +1,21 @@
 #!/bin/bash
 #Hey I am coding, while listening to sabrina carpenter
 
-echo "Set up script and build/run commands"
 
 command=$1
 
-echo $command
-if [ -n $command ];
+if [ -n "$command" ];
 then
-    if [ $command = "build" ];
+    if [ "$command" = "build" ];
     then
         make -C build -j$(nproc)
     fi
-    if [ $command = "run" ];
+    if [ "$command" = "run" ];
     then
         build/IA
     fi
 else
+    echo "Set up script and build/run commands"
     sleep 1
     echo "Running cmake..."
     cmake -B build -S .

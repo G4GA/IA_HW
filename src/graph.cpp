@@ -128,6 +128,9 @@ std::vector<const Node*> Graph::getConnectedNodes
         const Node *second = conIt -> getSecond();
 
         if (node -> getName() == first -> getName()) {
+            connectedNodes.push_back(second);
+        } else if (node -> getName() == second -> getName()) {
+            connectedNodes.push_back(first);
         }
 
     }

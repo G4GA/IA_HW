@@ -10,7 +10,8 @@
 
 class NodeShape {
     public:
-        NodeShape(const sf::Vector2i&, const sf::Vector2f&, const Node*);
+        NodeShape(const sf::Vector2i&, const sf::Vector2f&,
+                  const Node*, const sf::Font&);
     //Getters and setter
         const sf::CircleShape& getShape() const; //Done
         const sf::Text& getLabel() const;//Done
@@ -23,27 +24,24 @@ class NodeShape {
     private:
         //Attributes
         sf::CircleShape shape;
-        sf::Font font;
         sf::Text shapeLabel;
         static const sf::Vector2f offsetPos;
 
         sf::Vector2i position;
-        sf::Vector2i realPos;
+        sf::Vector2f realPos;
         const Node* node;
         //Constants
         static constexpr sf::Uint32 LIGHT_BLUE = 0xC4E1F6;
         static constexpr sf::Uint32 BLUE = 0x0D92F4;
         static constexpr float DEF_THICKNESS = 2.f;
-        const std::string FONT_FP = "./static/JetBrainsMono-Regular.ttf";
         //Methods
         void buildShape();//Done
-        void buildLabel();//Done
+        void buildLabel(const sf::Font&);//Done
 };
 
 class GraphUI {
     public:
         GraphUI(Graph&, const sf::Vector2f&);
-        GraphUI(Graph&);
         //getters
         sf::Vector2f getCellSize() const; //Done
         float getCellXSize() const; //Done
@@ -57,7 +55,11 @@ class GraphUI {
         //attributes
         sf::Vector2f cellSize;
         sf::Vector2i gridScale;
+        sf::Vector2f windowSize;
         Graph        *graph;
+        sf::Font font;
+
+        const std::string FONT_FP = "./static/JetBrainsMono-Regular.ttf";
 
         std::vector<NodeShape> nodeShapes;
         sf::VertexArray        connnectionLines;
@@ -83,6 +85,7 @@ class MainWindow {
         //Constants
         //Private methods
         int eventLoop();
+        void drawGraph();
         //Constant attributes
         const std::string graphPath = "./static/placement.txt";
 };

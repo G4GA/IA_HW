@@ -9,3 +9,4 @@ Makefile
 *.a
 compile_commands.json
 IA
+.vscode/
