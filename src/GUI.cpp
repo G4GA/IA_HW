@@ -28,6 +28,13 @@ int MainWindow::eventLoop()
 {
     int result = 0;
 
+    const Node *a = graph->getByName("A");
+    const Node *b = graph->getByName("B");
+    const Connection *conn = graph->getConnection(a, b);
+    ConnectionShape connShape(conn,
+                              g_ui.getNodeShape(0).getShape().getPosition(),
+                              g_ui.getNodeShape(1).getShape().getPosition());
+
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event))
@@ -39,6 +46,7 @@ int MainWindow::eventLoop()
 
         drawGraph();
 
+        window.draw(connShape.getLine());
         window.display();
     }
 
@@ -209,4 +217,29 @@ void GraphUI::readVector
     curVector.x = vArray[0]; 
     curVector.y = vArray[1]; 
 }
+
+//Method definitions for ConnectionShape class
+ConnectionShape::ConnectionShape
+(const Connection* connection, const sf::Vector2f &firstPos, const sf::Vector2f &secondPos) :
+    line(sf::Lines, VERTEX_SIZE)
+{
+    this -> connection = connection;
+    initPoint(firstPos, 0);
+    initPoint(secondPos, 0);
+}
+
+const sf::VertexArray &ConnectionShape::getLine() const
+{
+    return line;
+}
+
+
+
+void ConnectionShape::initPoint
+(const sf::Vector2f& position, size_t index)
+{
+    line[index].position = sf::Vector2f(position);
+    line[index].color = sf::Color::Black;
+}
+
 

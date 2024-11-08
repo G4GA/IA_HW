@@ -39,6 +39,22 @@ class NodeShape {
         void buildLabel(const sf::Font&);//Done
 };
 
+class ConnectionShape {
+    public:
+        ConnectionShape(const Connection*,
+                        const sf::Vector2f&,
+                        const sf::Vector2f&);
+        const Connection *getConnection() const;
+        const sf::VertexArray &getLine() const;
+    private:
+        //Attributes
+        const Connection* connection;
+        sf::VertexArray line;
+        static constexpr size_t VERTEX_SIZE = 2;
+        void initPoint(const sf::Vector2f&,
+                       size_t);
+};
+
 class GraphUI {
     public:
         GraphUI(Graph&, const sf::Vector2f&);

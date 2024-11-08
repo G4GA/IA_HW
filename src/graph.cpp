@@ -94,6 +94,12 @@ size_t Graph::getConnectionWeight(const Connection* conn)
 
 }
 
+const Connection *Graph::getConnection
+(const Node* first, const Node*second) const
+{
+    
+}
+
 void Graph::createNode
 (const Node& node)
 {
