@@ -67,6 +67,8 @@ class GraphUI {
 
         const NodeShape &getNodeShape(size_t) const;
         const NodeShape &getByName(const std::string&) const;
+        const ConnectionShape &getConnsByNode(const Node*) const;
+        const ConnectionShape &getConnByNode(const Node*) const;
         //Methods
         void loadMap(const std::string&);
     private:
@@ -80,6 +82,7 @@ class GraphUI {
         const std::string FONT_FP = "./static/JetBrainsMono-Regular.ttf";
 
         std::vector<NodeShape> nodeShapes;
+        std::vector<ConnectionShape> connShapes;
         sf::VertexArray        connnectionLines;
         //Methods
         void readVector(std::string&, sf::Vector2i&);
