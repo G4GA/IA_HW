@@ -35,6 +35,9 @@ int MainWindow::eventLoop()
                               g_ui.getNodeShape(0).getShape().getPosition(),
                               g_ui.getNodeShape(1).getShape().getPosition());
 
+    std::cout << g_ui.getNodeShape(0).getShape().getPosition().x << std::endl <<
+                 g_ui.getNodeShape(0).getShape().getPosition().x << std::endl;
+
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event))
@@ -44,9 +47,9 @@ int MainWindow::eventLoop()
         }
         window.clear(sf::Color::White);
 
+        window.draw(connShape.getLine());
         drawGraph();
 
-        window.draw(connShape.getLine());
         window.display();
     }
 
@@ -162,6 +165,19 @@ const NodeShape &GraphUI::getNodeShape
     return *rNode;
 }
 
+const NodeShape &GraphUI::getByName
+(const std::string &name) const
+{
+    const NodeShape *rNode = nullptr;
+    for (std::vector<NodeShape>::const_iterator it = nodeShapes.begin(); it != nodeShapes.end(); it++) {
+        if (it->getNodeName() == name) {
+            rNode = &*it;
+            break;
+        }
+    }
+    return *rNode;
+}
+
 const std::string NodeShape::getNodeName() const {
     return node -> getName();
 }
@@ -225,7 +241,7 @@ ConnectionShape::ConnectionShape
 {
     this -> connection = connection;
     initPoint(firstPos, 0);
-    initPoint(secondPos, 0);
+    initPoint(secondPos, 1);
 }
 
 const sf::VertexArray &ConnectionShape::getLine() const
@@ -238,7 +254,7 @@ const sf::VertexArray &ConnectionShape::getLine() const
 void ConnectionShape::initPoint
 (const sf::Vector2f& position, size_t index)
 {
-    line[index].position = sf::Vector2f(position);
+    line[index].position = sf::Vector2f(position) + sf::Vector2f(SIZE, SIZE);
     line[index].color = sf::Color::Black;
 }
 

@@ -50,6 +50,7 @@ class ConnectionShape {
         //Attributes
         const Connection* connection;
         sf::VertexArray line;
+        static constexpr float SIZE = 24.f;
         static constexpr size_t VERTEX_SIZE = 2;
         void initPoint(const sf::Vector2f&,
                        size_t);
@@ -65,6 +66,7 @@ class GraphUI {
         sf::Vector2i getGridScale() const; //Done
 
         const NodeShape &getNodeShape(size_t) const;
+        const NodeShape &getByName(const std::string&) const;
         //Methods
         void loadMap(const std::string&);
     private:
