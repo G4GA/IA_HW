@@ -89,15 +89,24 @@ const Node* Graph::getByName
     return match;
 }
 
-size_t Graph::getConnectionWeight(const Connection* conn)
-{
-
-}
-
 const Connection *Graph::getConnection
-(const Node* first, const Node*second) const
+(const Node *first, const Node *second) const
 {
-    
+    const Connection *returnConn = nullptr;
+
+    for (const Connection *conn : connections) {
+
+        if (conn->getFirst() == first) {
+            if (conn->getSecond() == second) {
+                returnConn = conn;
+            }
+        } else if (conn->getFirst() == second) {
+            if (conn->getSecond() == first) {
+                returnConn = conn;
+            }
+        }
+    }
+    return returnConn;
 }
 
 void Graph::createNode

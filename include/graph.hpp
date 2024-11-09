@@ -30,8 +30,6 @@ class Graph {
     public:
         Graph();
         const Node* getByName(const std::string&);
-        size_t getConnectionWeight(const Connection*);
-        bool areConnected(const Node*, const Node*);
         const Connection* getConnection(const Node*, const Node*) const;
 
         void createNode(const Node&);

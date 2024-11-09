@@ -1,4 +1,5 @@
 #include <GUI.hpp>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -28,16 +29,6 @@ int MainWindow::eventLoop()
 {
     int result = 0;
 
-    const Node *a = graph->getByName("A");
-    const Node *b = graph->getByName("B");
-    const Connection *conn = graph->getConnection(a, b);
-    ConnectionShape connShape(conn,
-                              g_ui.getNodeShape(0).getShape().getPosition(),
-                              g_ui.getNodeShape(1).getShape().getPosition());
-
-    std::cout << g_ui.getNodeShape(0).getShape().getPosition().x << std::endl <<
-                 g_ui.getNodeShape(0).getShape().getPosition().x << std::endl;
-
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event))
@@ -47,7 +38,6 @@ int MainWindow::eventLoop()
         }
         window.clear(sf::Color::White);
 
-        window.draw(connShape.getLine());
         drawGraph();
 
         window.display();
@@ -57,7 +47,12 @@ int MainWindow::eventLoop()
 }
 
 void MainWindow::drawGraph(){
-    
+    std::vector<const Connection*> connections = graph->getAllConnections();
+    for (auto conn : connections) {
+        ConnectionShape curLine = g_ui.getConnectionShape(conn);
+        window.draw(curLine.getLine());
+    }
+
     for (size_t i = 0; i < graph->getAllNodes().size(); i++) {
             NodeShape curShape = g_ui.getNodeShape(i);
             window.draw(curShape.getShape());
@@ -182,12 +177,26 @@ const std::string NodeShape::getNodeName() const {
     return node -> getName();
 }
 
+const ConnectionShape &GraphUI::getConnectionShape
+(const Connection* conn) const 
+{
+    const ConnectionShape *rConn = nullptr;
+    for (std::vector<ConnectionShape>::const_iterator it = connShapes.begin();
+         it != connShapes.end(); it++) {
+
+        if (it->getConnection() == conn) {
+            rConn = &*it;
+            break;
+        }
+    } 
+    return *rConn;
+}
+
 void GraphUI::loadMap
 (const std::string& filePath)
 {
     std::ifstream fd(filePath);
     std::string line;
-    int counter = 0;
 
     if (fd.is_open()) {
         while (getline(fd, line, '=')) {
@@ -209,6 +218,7 @@ void GraphUI::loadMap
             }
         }
     }
+    buildConnShapes();
 }
 
 void GraphUI::setCellSize()
@@ -234,6 +244,22 @@ void GraphUI::readVector
     curVector.y = vArray[1]; 
 }
 
+void GraphUI::buildConnShapes()
+{
+    std::cout << "All connections, from GUI\n";
+    for (const Connection* conn : graph->getAllConnections()) {
+        /*std::cout << "Nodes: \n" << 
+        "\tFirst: " << conn->getFirst()->getName() << "\n" <<
+        "\tSecond: " << conn->getSecond()->getName() << "\n" <<
+        "Weight: " << conn->getWeight() << "\n";*/
+        NodeShape first = getByName(conn->getFirst()->getName());
+        NodeShape second = getByName(conn->getSecond()->getName());
+
+        ConnectionShape newLine(conn, first.getRealPos(), second.getRealPos());
+        connShapes.push_back(newLine);
+    }
+}
+
 //Method definitions for ConnectionShape class
 ConnectionShape::ConnectionShape
 (const Connection* connection, const sf::Vector2f &firstPos, const sf::Vector2f &secondPos) :
@@ -249,13 +275,15 @@ const sf::VertexArray &ConnectionShape::getLine() const
     return line;
 }
 
-
+const Connection *ConnectionShape::getConnection() const
+{
+    return connection;
+}
 
 void ConnectionShape::initPoint
 (const sf::Vector2f& position, size_t index)
 {
-    line[index].position = sf::Vector2f(position) + sf::Vector2f(SIZE, SIZE);
-    line[index].color = sf::Color::Black;
+    line[index].position = sf::Vector2f(position);
+    line[index].color = sf::Color(COLOR);
 }
-
 

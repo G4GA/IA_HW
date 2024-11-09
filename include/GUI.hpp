@@ -1,7 +1,5 @@
 #pragma once
 
-#include<iostream>
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
@@ -50,8 +48,8 @@ class ConnectionShape {
         //Attributes
         const Connection* connection;
         sf::VertexArray line;
-        static constexpr float SIZE = 24.f;
         static constexpr size_t VERTEX_SIZE = 2;
+        static constexpr sf::Uint32 COLOR = 0xC62E2EFF;
         void initPoint(const sf::Vector2f&,
                        size_t);
 };
@@ -67,8 +65,7 @@ class GraphUI {
 
         const NodeShape &getNodeShape(size_t) const;
         const NodeShape &getByName(const std::string&) const;
-        const ConnectionShape &getConnsByNode(const Node*) const;
-        const ConnectionShape &getConnByNode(const Node*) const;
+        const ConnectionShape &getConnectionShape(const Connection*) const;
         //Methods
         void loadMap(const std::string&);
     private:
@@ -83,9 +80,9 @@ class GraphUI {
 
         std::vector<NodeShape> nodeShapes;
         std::vector<ConnectionShape> connShapes;
-        sf::VertexArray        connnectionLines;
         //Methods
         void readVector(std::string&, sf::Vector2i&);
+        void buildConnShapes();
         void addNodeShape(const Node&);
         void setCellSize(); 
 };
