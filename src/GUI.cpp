@@ -63,6 +63,7 @@ int MainWindow::eventLoop()
         drawGraph();
 
         window.display();
+        sf::sleep(sf::milliseconds(10));
     }
 
     return result;
