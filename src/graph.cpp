@@ -3,7 +3,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-
+#include <limits>
+#include <algorithm>
 
 //Graph method definitions
 Graph::Graph()
@@ -61,6 +62,8 @@ int Graph::loadFromFile(const std::string& filepath)
     } else {
         rc = 1;
     }
+
+    dijkstra(getByName("A"));
     return rc;
 }
 
@@ -153,12 +156,56 @@ std::vector<const Node*> Graph::getConnectedNodes
     return connectedNodes;
 }
 
-std::vector<const Node*> Graph::dijkstra
-(const Node*) const
-{}
+void Graph::dijkstra
+(const Node* origin)
+{
+    
+    std::vector<const Node*> notVisited = getAllNodes();
+    for (const Node* node : nodes) {
+        distances[node] = std::numeric_limits<size_t>::max();
+        predecesorMap[node] = nullptr;
+    }
+    distances[origin] = 0;
 
-std::vector<const Node*> Graph::getNodes() const
-{}
+    while(!notVisited.empty()) {
+        const Node* node = nullptr;
+        size_t minValue = std::numeric_limits<size_t>::max();
+        //Getting the shortest value from distance
+        for (const Node* curNode : notVisited) {
+            if (distances[curNode] < minValue) {
+                minValue = distances[curNode];
+                node = curNode;
+            }
+        }
+
+        notVisited.erase(std::find(notVisited.begin(), notVisited.end(), node));
+        std::vector<const Connection*> nodeConnections = getConnections(node);
+        for (const Connection* conn : nodeConnections) {
+            size_t curDis = distances[node] + conn->getWeight();
+            const Node* connNode = conn->getFirst();
+            if (connNode == node) {
+                connNode = conn->getSecond();
+            }
+            if (curDis < distances[connNode]) {
+                distances[connNode] = curDis;
+                predecesorMap[connNode] = node;
+            }
+        }
+    }
+}
+
+std::vector<const Connection*> Graph::getConnections
+(const Node* node) const
+{
+    std::vector<const Connection*> conns;
+    for (const Connection* con : connections) {
+        if (node == con -> getFirst() || node == con -> getSecond()) {
+            conns.push_back(con);
+        }
+    }
+
+    return conns;
+}
 
 std::vector<const Node*> Graph::getAllNodes () const
 {
@@ -167,6 +214,31 @@ std::vector<const Node*> Graph::getAllNodes () const
 std::vector<const Connection*> Graph::getAllConnections () const 
 {
     return connections;
+}
+
+std::unordered_map<const Node*, const Node*> Graph::getPredecesorMap() const
+{
+    return predecesorMap;
+}
+
+std::unordered_map<const Node*, size_t>      Graph::getShortestDistance() const
+{
+    return distances;
+}
+
+Graph::~Graph()
+{
+    while(!nodes.empty()) { 
+        const Node *delNode = nodes.back();
+        delete delNode;
+        nodes.pop_back();
+    }
+
+    while(!connections.empty()) {
+        const Connection *delConn = connections.back();
+        delete delConn;
+        connections.pop_back();
+    }
 }
 
 //Node method definitions

@@ -16,6 +16,7 @@ class NodeShape {
         const sf::Vector2i getPos() const;
         const sf::Vector2f getRealPos() const;
         const std::string getNodeName() const;
+        void setColor(const sf::Color&);
         void setRealPos(sf::Vector2f);
     //Public const expressions
         static constexpr float SIZE = 24.f;
@@ -41,17 +42,22 @@ class ConnectionShape {
     public:
         ConnectionShape(const Connection*,
                         const sf::Vector2f&,
-                        const sf::Vector2f&);
+                        const sf::Vector2f&,
+                        const sf::Font&);
         const Connection *getConnection() const;
         const sf::VertexArray &getLine() const;
+        const sf::Text &getText() const;
     private:
         //Attributes
         const Connection* connection;
         sf::VertexArray line;
+        sf::Text lineText;
         static constexpr size_t VERTEX_SIZE = 2;
         static constexpr sf::Uint32 COLOR = 0xC62E2EFF;
         void initPoint(const sf::Vector2f&,
                        size_t);
+        void initText(const sf::Font&);
+
 };
 
 class GraphUI {
@@ -64,7 +70,7 @@ class GraphUI {
         sf::Vector2i getGridScale() const; //Done
 
         const NodeShape &getNodeShape(size_t) const;
-        const NodeShape &getByName(const std::string&) const;
+        NodeShape &getByName(const std::string&);
         const ConnectionShape &getConnectionShape(const Connection*) const;
         //Methods
         void loadMap(const std::string&);

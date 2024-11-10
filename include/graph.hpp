@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 class Node {
     public:
@@ -29,6 +30,7 @@ class Connection {
 class Graph {
     public:
         Graph();
+        ~Graph();
         const Node* getByName(const std::string&);
         const Connection* getConnection(const Node*, const Node*) const;
 
@@ -37,16 +39,21 @@ class Graph {
         void createConnection(const Node*, const Node*, size_t);
 
         std::vector<const Node*> getConnectedNodes(const Node*) const;
-        std::vector<const Node*> dijkstra(const Node*) const;
-        std::vector<const Node*> getNodes() const;
+        std::vector<const Connection*> getConnections(const Node*) const;
+        void dijkstra(const Node*);
 
         int loadFromFile (const std::string&);
 
         std::vector<const Node*> getAllNodes() const;
         std::vector<const Connection*> getAllConnections() const;
+        std::unordered_map<const Node*, const Node*> getPredecesorMap() const;
+        std::unordered_map<const Node*, size_t> getShortestDistance() const;
+
     private:
         std::vector<const Node*> nodes;
         std::vector<const Connection*> connections;
+        std::unordered_map<const Node*, const Node*> predecesorMap;
+        std::unordered_map<const Node*, size_t> distances;
         void getSecondNode(std::string&, std::string&, size_t&);
 
 };

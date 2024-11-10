@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <algorithm>
+#include <unordered_map>
 //Constant definitions
 
 static const sf::Vector2f offsetPos(16.5f, 9.5f);
@@ -18,6 +20,7 @@ MainWindow::MainWindow(const size_t& width, const size_t& height,
 
     this -> graph = &graph;
     g_ui.loadMap(graphPath);
+    graph.dijkstra(graph.getByName("A"));
 }
 
 int MainWindow::run() 
@@ -28,6 +31,25 @@ int MainWindow::run()
 int MainWindow::eventLoop() 
 {
     int result = 0;
+
+    const Node* curNode = graph->getByName("J");
+    std::vector<const Node*> shortestPath;
+    shortestPath.push_back(curNode);
+    while(curNode != nullptr) {
+        for (auto predecesorPair : graph->getPredecesorMap()) {
+            if (predecesorPair.first == curNode) {
+                curNode = predecesorPair.second;
+                if (curNode != nullptr) {
+                    shortestPath.push_back(curNode);
+                    
+                }
+            }
+        }
+    } 
+
+    for (const Node* node : shortestPath) {
+            g_ui.getByName(node->getName()).setColor(sf::Color::Green);
+        }
 
     while(window.isOpen()) {
         sf::Event event;
@@ -51,6 +73,7 @@ void MainWindow::drawGraph(){
     for (auto conn : connections) {
         ConnectionShape curLine = g_ui.getConnectionShape(conn);
         window.draw(curLine.getLine());
+        window.draw(curLine.getText());
     }
 
     for (size_t i = 0; i < graph->getAllNodes().size(); i++) {
@@ -115,6 +138,10 @@ void NodeShape::buildLabel(const sf::Font &font)
                            realPos.y - (offset_position.y));
 }
 
+void NodeShape::setColor(const sf::Color& new_color) {
+    shape.setFillColor(new_color);
+}
+
 //GraphUI Method
 
 GraphUI::GraphUI
@@ -160,11 +187,11 @@ const NodeShape &GraphUI::getNodeShape
     return *rNode;
 }
 
-const NodeShape &GraphUI::getByName
-(const std::string &name) const
+NodeShape &GraphUI::getByName
+(const std::string &name)
 {
-    const NodeShape *rNode = nullptr;
-    for (std::vector<NodeShape>::const_iterator it = nodeShapes.begin(); it != nodeShapes.end(); it++) {
+    NodeShape *rNode = nullptr;
+    for (std::vector<NodeShape>::iterator it = nodeShapes.begin(); it != nodeShapes.end(); it++) {
         if (it->getNodeName() == name) {
             rNode = &*it;
             break;
@@ -255,19 +282,22 @@ void GraphUI::buildConnShapes()
         NodeShape first = getByName(conn->getFirst()->getName());
         NodeShape second = getByName(conn->getSecond()->getName());
 
-        ConnectionShape newLine(conn, first.getRealPos(), second.getRealPos());
+        ConnectionShape newLine(conn, first.getRealPos(),
+                                second.getRealPos(), font);
         connShapes.push_back(newLine);
     }
 }
 
 //Method definitions for ConnectionShape class
 ConnectionShape::ConnectionShape
-(const Connection* connection, const sf::Vector2f &firstPos, const sf::Vector2f &secondPos) :
+(const Connection* connection, const sf::Vector2f &firstPos,
+ const sf::Vector2f &secondPos, const sf::Font &font) :
     line(sf::Lines, VERTEX_SIZE)
 {
     this -> connection = connection;
     initPoint(firstPos, 0);
     initPoint(secondPos, 1);
+    initText(font);
 }
 
 const sf::VertexArray &ConnectionShape::getLine() const
@@ -280,10 +310,30 @@ const Connection *ConnectionShape::getConnection() const
     return connection;
 }
 
+const sf::Text &ConnectionShape::getText() const
+{
+    return lineText;
+}
+
 void ConnectionShape::initPoint
 (const sf::Vector2f& position, size_t index)
 {
     line[index].position = sf::Vector2f(position);
     line[index].color = sf::Color(COLOR);
+}
+
+void ConnectionShape::initText
+(const sf::Font &font)
+{
+    lineText.setFont(font);
+    lineText.setString(std::to_string(connection->getWeight()));
+    lineText.setFillColor(sf::Color::Black);
+    lineText.setCharacterSize(20.f);
+
+    float posX = (line[0].position.x + line[1].position.x) / 2;
+    float posY = (line[0].position.y + line[1].position.y) / 2;
+
+    sf::Vector2f textPosition(sf::Vector2f(posX, posY));
+    lineText.setPosition(textPosition);
 }
 

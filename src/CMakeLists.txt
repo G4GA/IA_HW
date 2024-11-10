@@ -1,8 +1,6 @@
 project(static_source)
 
-set(PROJECT_SOURCES dijkstra.cpp
-                    kruskal.cpp
-                    GUI.cpp
+set(PROJECT_SOURCES GUI.cpp
                     graph.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
