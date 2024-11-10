@@ -20,6 +20,8 @@ class NodeShape {
         void setRealPos(sf::Vector2f);
     //Public const expressions
         static constexpr float SIZE = 24.f;
+        static constexpr sf::Uint32 LIGHT_BLUE = 0xC4E1F6;
+        static constexpr sf::Uint32 BLUE = 0x0D92F4;
     private:
         //Attributes
         sf::CircleShape shape;
@@ -30,8 +32,7 @@ class NodeShape {
         sf::Vector2f realPos;
         const Node* node;
         //Constants
-        static constexpr sf::Uint32 LIGHT_BLUE = 0xC4E1F6;
-        static constexpr sf::Uint32 BLUE = 0x0D92F4;
+        
         static constexpr float DEF_THICKNESS = 2.f;
         //Methods
         void buildShape();//Done
@@ -45,15 +46,15 @@ class ConnectionShape {
                         const sf::Vector2f&,
                         const sf::Font&);
         const Connection *getConnection() const;
-        const sf::VertexArray &getLine() const;
-        const sf::Text &getText() const;
+        sf::VertexArray &getLine();
+        sf::Text &getText();
+        static constexpr sf::Uint32 COLOR = 0xC62E2EFF;
     private:
         //Attributes
         const Connection* connection;
         sf::VertexArray line;
         sf::Text lineText;
         static constexpr size_t VERTEX_SIZE = 2;
-        static constexpr sf::Uint32 COLOR = 0xC62E2EFF;
         void initPoint(const sf::Vector2f&,
                        size_t);
         void initText(const sf::Font&);
@@ -69,11 +70,13 @@ class GraphUI {
         float getCellYSize() const; //Done
         sf::Vector2i getGridScale() const; //Done
 
-        const NodeShape &getNodeShape(size_t) const;
+        NodeShape &getNodeShape(size_t);
         NodeShape &getByName(const std::string&);
-        const ConnectionShape &getConnectionShape(const Connection*) const;
+        ConnectionShape &getConnectionShape(const Connection*);
         //Methods
         void loadMap(const std::string&);
+        void colorPath(const Node*);
+        void resetColors();
     private:
         //attributes
         sf::Vector2f cellSize;

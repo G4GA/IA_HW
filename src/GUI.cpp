@@ -32,31 +32,37 @@ int MainWindow::eventLoop()
 {
     int result = 0;
 
-    const Node* curNode = graph->getByName("J");
-    std::vector<const Node*> shortestPath;
-    shortestPath.push_back(curNode);
-    while(curNode != nullptr) {
-        for (auto predecesorPair : graph->getPredecesorMap()) {
-            if (predecesorPair.first == curNode) {
-                curNode = predecesorPair.second;
-                if (curNode != nullptr) {
-                    shortestPath.push_back(curNode);
-                    
-                }
-            }
-        }
-    } 
-
-    for (const Node* node : shortestPath) {
-            g_ui.getByName(node->getName()).setColor(sf::Color::Green);
-        }
-
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    // Get mouse position relative to the window
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                    sf::Vector2f mousePosF(static_cast<float>(mousePos.x),
+                                           static_cast<float>(mousePos.y));
+
+                    bool outsideShape = false;
+                    // Loop through all NodeShapes and check for containment
+                    for (size_t i = 0; i < graph->getAllNodes().size(); i++) {
+                        NodeShape& curShape = g_ui.getNodeShape(i);
+                        
+                        // Check if the mouse position is within the shape's bounds
+                        if (curShape.getShape().getGlobalBounds().contains(mousePosF)) {
+                            g_ui.colorPath(graph->getByName(curShape.getNodeName()));
+                            outsideShape = true;
+                        } 
+                        
+                    }
+                   if (!outsideShape) {
+                        g_ui.resetColors();
+                    } 
+                }    
+            }
         }
         window.clear(sf::Color::White);
 
@@ -173,12 +179,12 @@ float GraphUI::getCellYSize () const
     return cellSize.y;
 }
 
-const NodeShape &GraphUI::getNodeShape
-(size_t index) const
+NodeShape &GraphUI::getNodeShape
+(size_t index)
 {
     size_t counter = 0;
-    const NodeShape *rNode = nullptr;
-    for (std::vector<NodeShape>::const_iterator it = nodeShapes.begin(); it != nodeShapes.end(); it++) {
+    NodeShape *rNode = nullptr;
+    for (std::vector<NodeShape>::iterator it = nodeShapes.begin(); it != nodeShapes.end(); it++) {
         if (counter == index) {
             rNode = &*it;
             break;
@@ -205,11 +211,11 @@ const std::string NodeShape::getNodeName() const {
     return node -> getName();
 }
 
-const ConnectionShape &GraphUI::getConnectionShape
-(const Connection* conn) const 
+ConnectionShape &GraphUI::getConnectionShape
+(const Connection* conn) 
 {
-    const ConnectionShape *rConn = nullptr;
-    for (std::vector<ConnectionShape>::const_iterator it = connShapes.begin();
+    ConnectionShape *rConn = nullptr;
+    for (std::vector<ConnectionShape>::iterator it = connShapes.begin();
          it != connShapes.end(); it++) {
 
         if (it->getConnection() == conn) {
@@ -289,6 +295,49 @@ void GraphUI::buildConnShapes()
     }
 }
 
+void GraphUI::colorPath(const Node* node) {
+    auto predecesorMap = graph->getPredecesorMap();
+    const Node* curNode = node;
+    std::vector<const Node*> nodePath;
+    nodePath.push_back(node);
+    std::vector<const Connection*> connectionPath;
+    while (curNode != nullptr) {
+        for (auto nodePair : predecesorMap) {
+            if (nodePair.first == curNode) {
+                curNode = nodePair.second;
+                if (curNode != nullptr) {
+                    nodePath.push_back(curNode);
+                    connectionPath.push_back(graph->getConnection(nodePair.first,
+                                                                     nodePair.second));
+                }
+            }
+        }
+    }
+    
+    for (auto node : nodePath) {
+        getByName(node->getName()).setColor(sf::Color::Green);
+    }
+    for (auto conn : connectionPath) {
+        auto &conShape = getConnectionShape(conn);
+        conShape.getLine()[0].color = sf::Color::Green;
+        conShape.getLine()[1].color = sf::Color::Green;
+        conShape.getText().setOutlineThickness(0.5f);
+    }
+
+}
+
+void GraphUI::resetColors() {
+    for (auto &shape : nodeShapes) {
+        shape.setColor(sf::Color(NodeShape::LIGHT_BLUE));
+    }
+
+    for (auto &shape : connShapes) {
+        shape.getLine()[0].color = sf::Color(shape.COLOR);
+        shape.getLine()[1].color = sf::Color(shape.COLOR);
+        shape.getText().setOutlineThickness(0);
+    }
+}
+
 //Method definitions for ConnectionShape class
 ConnectionShape::ConnectionShape
 (const Connection* connection, const sf::Vector2f &firstPos,
@@ -301,7 +350,7 @@ ConnectionShape::ConnectionShape
     initText(font);
 }
 
-const sf::VertexArray &ConnectionShape::getLine() const
+sf::VertexArray &ConnectionShape::getLine()
 {
     return line;
 }
@@ -311,7 +360,7 @@ const Connection *ConnectionShape::getConnection() const
     return connection;
 }
 
-const sf::Text &ConnectionShape::getText() const
+sf::Text &ConnectionShape::getText()
 {
     return lineText;
 }
