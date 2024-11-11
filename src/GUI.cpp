@@ -3,8 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <algorithm>
-#include <unordered_map>
 //Constant definitions
 
 static const sf::Vector2f offsetPos(16.5f, 9.5f);
@@ -319,9 +317,10 @@ void GraphUI::colorPath(const Node* node) {
     }
     for (auto conn : connectionPath) {
         auto &conShape = getConnectionShape(conn);
-        conShape.getLine()[0].color = sf::Color::Green;
-        conShape.getLine()[1].color = sf::Color::Green;
+        conShape.getLine()[0].color = sf::Color(sf::Uint32(0x4C4B16FF));
+        conShape.getLine()[1].color = sf::Color(sf::Uint32(0x4C4B16FF));
         conShape.getText().setOutlineThickness(0.5f);
+        conShape.getText().setFillColor(sf::Color(sf::Uint32(0xD91656FF)));
     }
 
 }
@@ -335,6 +334,7 @@ void GraphUI::resetColors() {
         shape.getLine()[0].color = sf::Color(shape.COLOR);
         shape.getLine()[1].color = sf::Color(shape.COLOR);
         shape.getText().setOutlineThickness(0);
+        shape.getText().setFillColor(sf::Color::Black);
     }
 }
 

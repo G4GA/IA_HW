@@ -170,7 +170,7 @@ void Graph::dijkstra
     while(!notVisited.empty()) {
         const Node* node = nullptr;
         size_t minValue = std::numeric_limits<size_t>::max();
-        //Getting the shortest value from distance
+
         for (const Node* curNode : notVisited) {
             if (distances[curNode] < minValue) {
                 minValue = distances[curNode];
